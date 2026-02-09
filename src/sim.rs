@@ -87,6 +87,9 @@ fn matches_target(
 
 /// Run a simulation to estimate collision and false rendezvous rates.
 ///
+/// Assumes independent peers and uniform sampling across dimensions. The
+/// results are illustrative and should not be treated as security guarantees.
+///
 /// This uses Monte Carlo sampling over uniformly generated patterns and does
 /// not attempt to model real sensor distributions.
 pub fn run_simulation(
