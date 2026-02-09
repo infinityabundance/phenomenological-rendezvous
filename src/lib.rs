@@ -8,3 +8,5 @@ pub mod pattern;
 pub mod matching;
 pub mod sim;
 
+pub use pattern::{NormalizedPattern, SubmodalityPattern};
+pub use srt::SemanticRendezvousToken;
