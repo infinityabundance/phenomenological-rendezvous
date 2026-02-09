@@ -23,7 +23,7 @@ This crate does not implement sensor drivers, device firmware, mobile apps, or u
 An SRT plus oracle-state (salt) deterministically maps to a SubmodalityPattern using HMAC-SHA256. The hash is partitioned into 16-bit segments and each segment is quantized into the appropriate range for its dimension. This yields a stable, reproducible pattern without exposing the secret.
 
 ## Status
-Experimental reference implementation.
+Status: Experimental reference implementation of the Phenomenological Rendezvous protocol. APIs may change.
 
 ## Getting Started
 ```bash
@@ -87,6 +87,9 @@ cargo run --example demo_offline_matching
 ```bash
 cargo run --example demo_simulation
 ```
+
+## Contributing
+Issues and pull requests are welcome. Please keep new work aligned with the protocol as described in the paper and avoid introducing incompatible semantics without discussion.
 
 ## License
 Apache-2.0

@@ -65,5 +65,10 @@ This crate does not implement encryption, authentication, or secure channels. It
 - Pattern stability: environmental variation and sensor drift can destabilize patterns; real deployments require calibration.
 - Metric simplicity: Euclidean distance and static `epsilon` are simple baselines and may underperform adaptive or domain-specific metrics.
 
+## Extension Ideas
+- Alternative distance metrics or adaptive `epsilon` strategies.
+- Pluggable sensor backends with calibration pipelines.
+- Integration with mobile apps or edge devices for data collection.
+
 ## Out of Scope
 This project does not implement real biosensor integrations, device firmware, or mobile apps. It focuses strictly on the protocol and its logic.

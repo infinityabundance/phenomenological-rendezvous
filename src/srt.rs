@@ -81,7 +81,7 @@ pub fn pattern_from_srt(
     mac.update(salt);
     let digest = mac.finalize().into_bytes();
 
-    let mut read = |start: usize| -> u16 {
+    let read = |start: usize| -> u16 {
         let hi = digest[start] as u16;
         let lo = digest[start + 1] as u16;
         (hi << 8) | lo
