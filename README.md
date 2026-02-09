@@ -18,22 +18,27 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 phenomenological-rendezvous = "0.1"
 ```
 
-## Usage
+```bash
+cargo add phenomenological-rendezvous
+```
+
+## Basic Usage
 ```rust
 use phenomenological_rendezvous::{
     SemanticRendezvousToken,
     SubmodalityPattern,
 };
-use phenomenological_rendezvous::srt::pattern_from_srt;
+use phenomenological_rendezvous::srt as pattern;
 use phenomenological_rendezvous::matching::{MatchingConfig, Matcher};
 
 fn main() {
     let srt_hex = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
     let srt = SemanticRendezvousToken::from_hex(srt_hex).unwrap();
-    let target = pattern_from_srt(&srt, b"example-salt");
+    let target = pattern::pattern_from_srt(&srt, b"example-salt");
 
     let measured = SubmodalityPattern::zeros();
-    let mut matcher = Matcher::new(MatchingConfig::new(0.5, 3));
+    let config = MatchingConfig::new(0.5, 3);
+    let mut matcher = Matcher::new(config);
     let matched = matcher.observe(&measured, &target);
     println!("Matched? {}", matched);
 }
@@ -95,7 +100,7 @@ cargo run --example demo_simulation
 ```
 
 ## Contributing
-Issues and pull requests are welcome. Please keep new work aligned with the protocol as described in the paper and avoid introducing incompatible semantics without discussion.
+Issues and pull requests are welcome. Please keep new work aligned with the protocol as described in the paper and avoid introducing incompatible semantics without discussion. The API is experimental and may change.
 
 ## License
 Apache-2.0
