@@ -69,6 +69,10 @@ impl SubmodalityPattern {
 
     /// Normalize this pattern into `[0, 1]` ranges for distance calculations.
     ///
+    /// The normalization uses fixed min/max ranges for each dimension. These
+    /// ranges are reference defaults and may need tuning or calibration in
+    /// real deployments based on sensors and user populations.
+    ///
     /// Temperature normalization assumes a `10..=40` Celsius operating window
     /// as a placeholder until domain-specific bounds are defined.
     pub fn normalize(&self) -> NormalizedPattern {
