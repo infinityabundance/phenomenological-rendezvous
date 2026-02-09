@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/infinityabundance/phenomenological-rendezvous">
-    <img src="/assets/phenomrndzv-dark2.svg" alt="" width="600"/>
+    <img src="/assets/phenomrndzv-dark2.svg" alt="" width="200"/>
   </a>
 </p>
 
