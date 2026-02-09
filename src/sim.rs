@@ -14,10 +14,15 @@ use crate::srt::{pattern_from_srt, SemanticRendezvousToken};
 /// Configuration for rendezvous simulations.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SimulationConfig {
+    /// Number of peers sampled per trial.
     pub num_peers: usize,
+    /// Number of independent trials to run.
     pub num_trials: usize,
+    /// Matching threshold in normalized space.
     pub epsilon: f32,
+    /// Number of consecutive samples required to match.
     pub window_size: usize,
+    /// Whether to apply a geographic filter factor.
     pub apply_geo_filter: bool,
     /// Factor to reduce candidate pool size (e.g. 1e6).
     pub geo_filter_factor: f32,
@@ -26,14 +31,23 @@ pub struct SimulationConfig {
 /// Output metrics from a simulation run.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SimulationResult {
+    /// Number of trials executed.
     pub total_trials: usize,
+    /// Total number of peer samples evaluated.
     pub total_peer_samples: usize,
+    /// Count of single-peer matches within the threshold.
     pub single_match_count: usize,
+    /// Count of trials where two independent peers both matched.
     pub double_match_count: usize,
+    /// Estimated probability of a single random peer matching.
     pub single_match_probability: f64,
+    /// Estimated probability of two independent peers both matching.
     pub double_match_probability: f64,
+    /// Effective peer count after optional geographic filtering.
     pub effective_peer_count: f64,
+    /// Expected number of matches in the effective peer pool.
     pub expected_matches_in_pool: f64,
+    /// Probability that at least one match exists in the pool.
     pub pool_match_probability: f64,
 }
 
@@ -72,6 +86,9 @@ fn matches_target(
 }
 
 /// Run a simulation to estimate collision and false rendezvous rates.
+///
+/// This uses Monte Carlo sampling over uniformly generated patterns and does
+/// not attempt to model real sensor distributions.
 pub fn run_simulation(
     config: &SimulationConfig,
     srt: &SemanticRendezvousToken,

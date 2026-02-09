@@ -2,23 +2,41 @@
 
 use serde::{Deserialize, Serialize};
 
+/// Minimum brightness (normalized).
 pub const BRIGHTNESS_MIN: f32 = 0.0;
+/// Maximum brightness (normalized).
 pub const BRIGHTNESS_MAX: f32 = 1.0;
+/// Minimum color temperature (Kelvin).
 pub const COLOR_TEMP_MIN: f32 = 2000.0;
+/// Maximum color temperature (Kelvin).
 pub const COLOR_TEMP_MAX: f32 = 10_000.0;
+/// Minimum focal distance (normalized).
 pub const FOCAL_DISTANCE_MIN: f32 = 0.0;
+/// Maximum focal distance (normalized).
 pub const FOCAL_DISTANCE_MAX: f32 = 1.0;
+/// Minimum volume (normalized).
 pub const VOLUME_MIN: f32 = 0.0;
+/// Maximum volume (normalized).
 pub const VOLUME_MAX: f32 = 1.0;
+/// Minimum tempo (BPM).
 pub const TEMPO_MIN: f32 = 0.0;
+/// Maximum tempo (BPM).
 pub const TEMPO_MAX: f32 = 300.0;
+/// Minimum pitch (Hz).
 pub const PITCH_MIN: f32 = 20.0;
+/// Maximum pitch (Hz).
 pub const PITCH_MAX: f32 = 20_000.0;
+/// Minimum temperature (Celsius).
 pub const TEMPERATURE_MIN: f32 = 10.0;
+/// Maximum temperature (Celsius).
 pub const TEMPERATURE_MAX: f32 = 40.0;
+/// Minimum movement (normalized).
 pub const MOVEMENT_MIN: f32 = 0.0;
+/// Maximum movement (normalized).
 pub const MOVEMENT_MAX: f32 = 1.0;
+/// Minimum arousal (normalized).
 pub const AROUSAL_MIN: f32 = 0.0;
+/// Maximum arousal (normalized).
 pub const AROUSAL_MAX: f32 = 1.0;
 
 /// A submodality pattern as described in the paper.
@@ -93,14 +111,23 @@ impl SubmodalityPattern {
 /// A fully normalized submodality pattern with values in `[0, 1]`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NormalizedPattern {
+    /// Normalized brightness.
     pub brightness: f32,
+    /// Normalized color temperature.
     pub color_temp: f32,
+    /// Normalized focal distance.
     pub focal_distance: f32,
+    /// Normalized volume.
     pub volume: f32,
+    /// Normalized tempo.
     pub tempo: f32,
+    /// Normalized pitch.
     pub pitch: f32,
+    /// Normalized temperature.
     pub temperature: f32,
+    /// Normalized movement.
     pub movement: f32,
+    /// Normalized arousal.
     pub arousal: f32,
 }
 
@@ -115,6 +142,9 @@ fn clamp01(value: f32) -> f32 {
 }
 
 /// Map a 16-bit integer into a floating-point range `[min, max]`.
+///
+/// `val` is interpreted as an unsigned 16-bit sample, where `0` maps to `min`
+/// and `u16::MAX` maps to `max`.
 pub fn quantize_u16_to_range(val: u16, min: f32, max: f32) -> f32 {
     let fraction = f32::from(val) / f32::from(u16::MAX);
     min + (max - min) * fraction

@@ -16,6 +16,15 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 - Matching and rendezvous utilities
 - Simulation scaffolding for experiments
 
+## Conceptual Overview
+Semantic Rendezvous Tokens (SRTs) are shared secrets used to derive target patterns deterministically. Given an SRT and a salt (oracle-state), both peers compute the same target pattern without revealing the secret itself.
+
+Submodality patterns represent internal sensory and affective dimensions across nine axes (e.g., brightness, tempo, arousal). These axes are normalized so distances can be measured consistently even when raw values are in different units.
+
+Matching compares a measured pattern against a target in normalized space. A match requires the distance to fall below a threshold `epsilon`, and a temporal window (`window_size`) enforces stability across consecutive observations.
+
+This crate does not implement sensor drivers, device firmware, mobile apps, or user experience layers. It focuses on protocol logic and reference tooling only.
+
 ## Encoding
 An SRT plus oracle-state (salt) deterministically maps to a SubmodalityPattern using HMAC-SHA256. The hash is partitioned into 16-bit segments and each segment is quantized into the appropriate range for its dimension. This yields a stable, reproducible pattern without exposing the secret.
 
@@ -31,6 +40,24 @@ cargo add phenomenological-rendezvous
 use phenomenological_rendezvous::SemanticRendezvousToken;
 
 let srt = SemanticRendezvousToken::from_bytes([0u8; 32]);
+```
+
+## Example
+```rust
+use phenomenological_rendezvous::matching::{MatchingConfig, Matcher};
+use phenomenological_rendezvous::srt::pattern_from_srt;
+use phenomenological_rendezvous::{SemanticRendezvousToken, SubmodalityPattern};
+
+let srt = SemanticRendezvousToken::from_hex(
+    "0000000000000000000000000000000000000000000000000000000000000000",
+)
+.expect("valid hex");
+let target = pattern_from_srt(&srt, b"oracle-state");
+
+let measured = SubmodalityPattern::zeros();
+let mut matcher = Matcher::new(MatchingConfig::new(0.1, 3));
+let is_match = matcher.observe(&measured, &target);
+println!("match? {is_match}");
 ```
 
 ## Command-line Usage
