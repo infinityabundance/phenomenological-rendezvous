@@ -75,5 +75,18 @@ cargo run --bin phenorv-cli -- match-stream \\
   --input examples/measured_example.jsonl
 ```
 
+## Running Tests and Examples
+```bash
+cargo test
+```
+
+```bash
+cargo run --example demo_offline_matching
+```
+
+```bash
+cargo run --example demo_simulation
+```
+
 ## License
 Apache-2.0
