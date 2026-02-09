@@ -23,6 +23,9 @@ pub struct CliArgs {
 #[derive(Debug, Subcommand)]
 pub enum Commands {
     /// Derive a target pattern from SRT + salt and write JSON output.
+    #[command(
+        long_about = "Derive a target pattern from an SRT and salt, then write JSON output.\n\nExample:\n  phenorv encode-target --srt-hex <HEX> --salt-string \"oracle-state\" --output target.json"
+    )]
     EncodeTarget {
         /// SRT hex string (64 hex chars).
         #[arg(long)]
@@ -38,6 +41,9 @@ pub enum Commands {
         output: Option<PathBuf>,
     },
     /// Match a stream of measured patterns against a derived target.
+    #[command(
+        long_about = "Match a JSONL stream of SubmodalityPattern values against a derived target.\n\nExample:\n  phenorv match-stream --srt-hex <HEX> --salt-string \"oracle-state\" --epsilon 0.1 --window-size 3 --input examples/measured_example.jsonl"
+    )]
     MatchStream {
         /// SRT hex string (64 hex chars).
         #[arg(long)]
@@ -59,6 +65,9 @@ pub enum Commands {
         input: PathBuf,
     },
     /// Run a Monte Carlo simulation for collision and false rendezvous rates.
+    #[command(
+        long_about = "Run a Monte Carlo simulation to estimate collision rates.\n\nExample:\n  phenorv simulate --srt-hex <HEX> --salt-string \"oracle-state\" --num-peers 1000 --num-trials 1000 --epsilon 0.1 --window-size 3"
+    )]
     Simulate {
         /// SRT hex string (64 hex chars).
         #[arg(long)]
