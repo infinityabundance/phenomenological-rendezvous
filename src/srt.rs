@@ -3,7 +3,16 @@
 use std::fmt;
 use std::str::FromStr;
 
+use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
+use sha2::Sha256;
+
+use crate::pattern::{
+    quantize_u16_to_range, SubmodalityPattern, AROUSAL_MAX, AROUSAL_MIN, BRIGHTNESS_MAX,
+    BRIGHTNESS_MIN, COLOR_TEMP_MAX, COLOR_TEMP_MIN, FOCAL_DISTANCE_MAX, FOCAL_DISTANCE_MIN,
+    MOVEMENT_MAX, MOVEMENT_MIN, PITCH_MAX, PITCH_MIN, TEMPERATURE_MAX, TEMPERATURE_MIN, TEMPO_MAX,
+    TEMPO_MIN, VOLUME_MAX, VOLUME_MIN,
+};
 
 /// A Semantic Rendezvous Token (SRT).
 ///
@@ -37,6 +46,50 @@ impl SemanticRendezvousToken {
     /// Parse an SRT from a hex string.
     pub fn from_hex(hex: &str) -> Result<Self, SrtParseError> {
         hex.parse()
+    }
+}
+
+/// Derive a `SubmodalityPattern` from an SRT and salt (oracle-state).
+///
+/// This uses HMAC-SHA256 with the SRT as key and `salt` as the message.
+/// The resulting 32-byte digest is partitioned into 16-bit chunks:
+///
+/// - `digest[0..2]`  -> brightness
+/// - `digest[2..4]`  -> color_temp
+/// - `digest[4..6]`  -> focal_distance
+/// - `digest[6..8]`  -> volume
+/// - `digest[8..10]` -> tempo
+/// - `digest[10..12]` -> pitch
+/// - `digest[12..14]` -> temperature
+/// - `digest[14..16]` -> movement
+/// - `digest[16..18]` -> arousal
+///
+/// Remaining bytes are reserved for future extensions.
+pub fn pattern_from_srt(
+    srt: &SemanticRendezvousToken,
+    salt: &[u8],
+) -> SubmodalityPattern {
+    let mut mac = Hmac::<Sha256>::new_from_slice(srt.as_bytes())
+        .expect("HMAC can take a 32-byte key");
+    mac.update(salt);
+    let digest = mac.finalize().into_bytes();
+
+    let mut read = |start: usize| -> u16 {
+        let hi = digest[start] as u16;
+        let lo = digest[start + 1] as u16;
+        (hi << 8) | lo
+    };
+
+    SubmodalityPattern {
+        brightness: quantize_u16_to_range(read(0), BRIGHTNESS_MIN, BRIGHTNESS_MAX),
+        color_temp: quantize_u16_to_range(read(2), COLOR_TEMP_MIN, COLOR_TEMP_MAX),
+        focal_distance: quantize_u16_to_range(read(4), FOCAL_DISTANCE_MIN, FOCAL_DISTANCE_MAX),
+        volume: quantize_u16_to_range(read(6), VOLUME_MIN, VOLUME_MAX),
+        tempo: quantize_u16_to_range(read(8), TEMPO_MIN, TEMPO_MAX),
+        pitch: quantize_u16_to_range(read(10), PITCH_MIN, PITCH_MAX),
+        temperature: quantize_u16_to_range(read(12), TEMPERATURE_MIN, TEMPERATURE_MAX),
+        movement: quantize_u16_to_range(read(14), MOVEMENT_MIN, MOVEMENT_MAX),
+        arousal: quantize_u16_to_range(read(16), AROUSAL_MIN, AROUSAL_MAX),
     }
 }
 
@@ -113,5 +166,28 @@ mod tests {
         let encoded = srt.to_string();
         let decoded: SemanticRendezvousToken = encoded.parse().expect("parse hex");
         assert_eq!(srt, decoded);
+    }
+
+    #[test]
+    fn srt_pattern_is_deterministic() {
+        let srt = SemanticRendezvousToken::from_bytes([7u8; 32]);
+        let salt = b"oracle-state";
+        let first = pattern_from_srt(&srt, salt);
+        let second = pattern_from_srt(&srt, salt);
+        assert_eq!(first, second);
+    }
+
+    #[test]
+    fn srt_pattern_changes_with_salt() {
+        let srt = SemanticRendezvousToken::from_bytes([9u8; 32]);
+        let base = pattern_from_srt(&srt, b"salt-a");
+        let mut different = 0;
+        for salt in [b"salt-b", b"salt-c", b"salt-d", b"salt-e"] {
+            let candidate = pattern_from_srt(&srt, salt);
+            if candidate != base {
+                different += 1;
+            }
+        }
+        assert!(different >= 2);
     }
 }

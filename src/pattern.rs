@@ -2,6 +2,25 @@
 
 use serde::{Deserialize, Serialize};
 
+pub const BRIGHTNESS_MIN: f32 = 0.0;
+pub const BRIGHTNESS_MAX: f32 = 1.0;
+pub const COLOR_TEMP_MIN: f32 = 2000.0;
+pub const COLOR_TEMP_MAX: f32 = 10_000.0;
+pub const FOCAL_DISTANCE_MIN: f32 = 0.0;
+pub const FOCAL_DISTANCE_MAX: f32 = 1.0;
+pub const VOLUME_MIN: f32 = 0.0;
+pub const VOLUME_MAX: f32 = 1.0;
+pub const TEMPO_MIN: f32 = 0.0;
+pub const TEMPO_MAX: f32 = 300.0;
+pub const PITCH_MIN: f32 = 20.0;
+pub const PITCH_MAX: f32 = 20_000.0;
+pub const TEMPERATURE_MIN: f32 = 10.0;
+pub const TEMPERATURE_MAX: f32 = 40.0;
+pub const MOVEMENT_MIN: f32 = 0.0;
+pub const MOVEMENT_MAX: f32 = 1.0;
+pub const AROUSAL_MIN: f32 = 0.0;
+pub const AROUSAL_MAX: f32 = 1.0;
+
 /// A submodality pattern as described in the paper.
 ///
 /// This mirrors the SubmodalityPattern pseudo-code and keeps raw values in
@@ -50,17 +69,17 @@ impl SubmodalityPattern {
 
     /// Normalize this pattern into `[0, 1]` ranges for distance calculations.
     ///
-    /// Temperature normalization assumes a `-40..=80` Celsius operating window
+    /// Temperature normalization assumes a `10..=40` Celsius operating window
     /// as a placeholder until domain-specific bounds are defined.
     pub fn normalize(&self) -> NormalizedPattern {
         NormalizedPattern {
             brightness: clamp01(self.brightness),
-            color_temp: clamp01((self.color_temp - 2000.0) / 8000.0),
+            color_temp: clamp01((self.color_temp - COLOR_TEMP_MIN) / (COLOR_TEMP_MAX - COLOR_TEMP_MIN)),
             focal_distance: clamp01(self.focal_distance),
             volume: clamp01(self.volume),
-            tempo: clamp01(self.tempo / 300.0),
-            pitch: clamp01((self.pitch - 20.0) / 19_980.0),
-            temperature: clamp01((self.temperature + 40.0) / 120.0),
+            tempo: clamp01(self.tempo / TEMPO_MAX),
+            pitch: clamp01((self.pitch - PITCH_MIN) / (PITCH_MAX - PITCH_MIN)),
+            temperature: clamp01((self.temperature - TEMPERATURE_MIN) / (TEMPERATURE_MAX - TEMPERATURE_MIN)),
             movement: clamp01(self.movement),
             arousal: clamp01(self.arousal),
         }
@@ -89,6 +108,12 @@ fn clamp01(value: f32) -> f32 {
     } else {
         value
     }
+}
+
+/// Map a 16-bit integer into a floating-point range `[min, max]`.
+pub fn quantize_u16_to_range(val: u16, min: f32, max: f32) -> f32 {
+    let fraction = f32::from(val) / f32::from(u16::MAX);
+    min + (max - min) * fraction
 }
 
 #[cfg(test)]

@@ -16,6 +16,9 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 - Matching and rendezvous utilities
 - Simulation scaffolding for experiments
 
+## Encoding
+An SRT plus oracle-state (salt) deterministically maps to a SubmodalityPattern using HMAC-SHA256. The hash is partitioned into 16-bit segments and each segment is quantized into the appropriate range for its dimension. This yields a stable, reproducible pattern without exposing the secret.
+
 ## Status
 Experimental reference implementation.
 
@@ -25,9 +28,9 @@ cargo add phenomenological-rendezvous
 ```
 
 ```rust
-use phenomenological_rendezvous::srt::Srt;
+use phenomenological_rendezvous::SemanticRendezvousToken;
 
-let srt = Srt::new();
+let srt = SemanticRendezvousToken::from_bytes([0u8; 32]);
 ```
 
 ## License
