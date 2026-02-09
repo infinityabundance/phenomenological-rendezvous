@@ -20,6 +20,25 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 phenomenological-rendezvous = "0.1"
 ```
 
+Add this crate to your project:
+
+```toml
+[dependencies]
+phenomenological-rendezvous = "0.1"
+```
+```
+cargo add phenomenological-rendezvous
+```
+---
+
+## 2. Text for Zenodo & the paper
+
+You can paste something like this into the **Zenodo description** and/or a short note in the paper (future version):
+
+> A reference Rust implementation of the protocol is available as the crate `phenomenological-rendezvous` on crates.io:  
+> <https://crates.io/crates/phenomenological-rendezvous>
+
+
 ```bash
 cargo add phenomenological-rendezvous
 ```
