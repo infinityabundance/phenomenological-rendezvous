@@ -2,6 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/phenomenological-rendezvous)](https://crates.io/crates/phenomenological-rendezvous)
 
+
 <p align="center">
   <a href="https://github.com/infinityabundance/phenomenological-rendezvous">
     <img src="./assets/phenomrndzv-dark2.svg" alt="Phenomenological Rendezvous" width="200" />
