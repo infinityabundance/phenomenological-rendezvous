@@ -1,7 +1,9 @@
 # Code Structure
 
 ## Overview
-This codebase provides a Rust reference implementation of the Phenomenological Rendezvous protocol from the paper (DOI: 10.5281/zenodo.18558066). It focuses on protocol logic, data structures, and tooling that let researchers reproduce the paper's core mechanics without building a full device stack.
+This codebase provides a Rust reference implementation of the Phenomenological Rendezvous protocol from the paper (DOI: 10.5281/zenodo.18558066). It is intended for publication on crates.io as `phenomenological-rendezvous` and serves as the reference implementation for the protocol logic described in the paper.
+
+It focuses on protocol logic, data structures, and tooling that let researchers reproduce the paper's core mechanics without building a full device stack.
 
 At a high level, an SRT (a shared secret) is mapped into a target submodality pattern. Measured patterns are compared in normalized space using a configurable threshold and a temporal stability window. The intent is to study when peers can rendezvous without centralized coordination.
 
@@ -31,7 +33,7 @@ Typical call flow: Configure simulation parameters, derive a target pattern from
 `cli`
 Responsibilities: Provide offline command-line tooling around the core library.
 Key types and functions: `CliArgs`, `Commands`, `run`.
-Typical call flow: Parse CLI args, call library functions (encoding, matching, simulation), emit JSON results.
+Typical call flow: Parse CLI args, call library functions (encoding, matching, simulation), emit JSON results. This module is used only by the `phenorv` binary and is not part of the public library API.
 
 ## Matching Protocol
 `NormalizedPattern` is the normalized representation of a `SubmodalityPattern` with all fields mapped into `[0, 1]`.

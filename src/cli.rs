@@ -7,10 +7,10 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 use serde_json::json;
 
-use crate::matching::{MatchingConfig, Matcher};
-use crate::pattern::SubmodalityPattern;
-use crate::sim::{run_simulation, SimulationConfig};
-use crate::srt::{pattern_from_srt, SemanticRendezvousToken};
+use phenomenological_rendezvous::matching::{MatchingConfig, Matcher};
+use phenomenological_rendezvous::pattern::SubmodalityPattern;
+use phenomenological_rendezvous::sim::{run_simulation, SimulationConfig};
+use phenomenological_rendezvous::srt::{pattern_from_srt, SemanticRendezvousToken};
 
 /// Command-line interface for Phenomenological Rendezvous experiments.
 #[derive(Debug, Parser)]
@@ -231,7 +231,7 @@ pub enum CliError {
     ConflictingSalt,
     InvalidHexLength(usize),
     InvalidHexCharacter(char),
-    SrtError(crate::srt::SrtParseError),
+    SrtError(phenomenological_rendezvous::srt::SrtParseError),
     Io(std::io::Error),
     Json(serde_json::Error),
 }
@@ -266,8 +266,8 @@ impl From<serde_json::Error> for CliError {
     }
 }
 
-impl From<crate::srt::SrtParseError> for CliError {
-    fn from(err: crate::srt::SrtParseError) -> Self {
+impl From<phenomenological_rendezvous::srt::SrtParseError> for CliError {
+    fn from(err: phenomenological_rendezvous::srt::SrtParseError) -> Self {
         Self::SrtError(err)
     }
 }

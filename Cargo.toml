@@ -2,6 +2,14 @@
 name = "phenomenological-rendezvous"
 version = "0.1.0"
 edition = "2021"
+authors = ["Riaan de Beer <predictiverendezvous@proton.me>"]
+description = "Reference implementation of the Phenomenological Rendezvous protocol: serverless peer coordination via Semantic Rendezvous Tokens and submodality patterns."
+license = "Apache-2.0"
+repository = "https://github.com/infinityabundance/phenomenological-rendezvous"
+readme = "README.md"
+documentation = "https://docs.rs/phenomenological-rendezvous"
+keywords = ["p2p", "rendezvous", "distributed-systems", "cryptography", "biosensors"]
+categories = ["network-programming", "science"]
 
 [dependencies]
 hmac = "0.12"
@@ -12,5 +20,5 @@ serde_json = "1"
 clap = { version = "4", features = ["derive"] }
 
 [[bin]]
-name = "phenorv-cli"
+name = "phenorv"
 path = "src/main.rs"
