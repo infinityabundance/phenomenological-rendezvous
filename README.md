@@ -33,5 +33,26 @@ use phenomenological_rendezvous::SemanticRendezvousToken;
 let srt = SemanticRendezvousToken::from_bytes([0u8; 32]);
 ```
 
+## Command-line Usage
+Derive a target pattern from an SRT and salt:
+
+```bash
+cargo run --bin phenorv-cli -- encode-target \\
+  --srt-hex 0000000000000000000000000000000000000000000000000000000000000000 \\
+  --salt-string \"oracle-state\" \\
+  --output target.json
+```
+
+Match a JSONL stream of measured patterns:
+
+```bash
+cargo run --bin phenorv-cli -- match-stream \\
+  --srt-hex 0000000000000000000000000000000000000000000000000000000000000000 \\
+  --salt-string \"oracle-state\" \\
+  --epsilon 0.1 \\
+  --window-size 3 \\
+  --input examples/measured_example.jsonl
+```
+
 ## License
 Apache-2.0
