@@ -20,6 +20,9 @@ pub fn euclidean_distance(a: &NormalizedPattern, b: &NormalizedPattern) -> f32 {
 }
 
 /// Configuration for matching behavior.
+///
+/// Assumes a static epsilon and a fixed temporal window, which are simple
+/// baselines meant for experimentation rather than adaptive production use.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MatchingConfig {
     /// Matching threshold in normalized 9D space.
@@ -39,6 +42,10 @@ impl MatchingConfig {
 }
 
 /// Matcher that performs temporal smoothing over recent observations.
+///
+/// This matcher assumes measured patterns arrive as a time-ordered stream and
+/// that each observation is comparable to the target pattern without additional
+/// context such as sensor calibration or quality scores.
 #[derive(Debug, Clone)]
 pub struct Matcher {
     /// Matching behavior configuration.

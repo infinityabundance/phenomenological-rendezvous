@@ -52,5 +52,18 @@ Normalization is explicit so raw sensor units can vary independently of the matc
 
 `epsilon` and `window_size` are parameters to keep the matching policy transparent and tunable. They allow experiments to trade off between sensitivity and stability without rewriting core logic.
 
+## Threat Model (Informal)
+- Adversarial network: assume the network or transport can be observed or interfered with; the protocol logic here does not secure or authenticate transport.
+- Trusted local sensors: assume local sensing and feature extraction are trusted and not adversarially manipulated.
+- SRT secrecy: assume SRTs are shared out of band and remain secret; the library does not provide key exchange.
+- Biosensor availability: assume peers can obtain measured submodality patterns reliably enough to evaluate matches.
+
+This crate does not implement encryption, authentication, or secure channels. It only provides rendezvous logic given an SRT and measured patterns.
+
+## Limitations
+- Temporal resolution: the reference model targets minutes-to-hours stability rather than instantaneous matching.
+- Pattern stability: environmental variation and sensor drift can destabilize patterns; real deployments require calibration.
+- Metric simplicity: Euclidean distance and static `epsilon` are simple baselines and may underperform adaptive or domain-specific metrics.
+
 ## Out of Scope
 This project does not implement real biosensor integrations, device firmware, or mobile apps. It focuses strictly on the protocol and its logic.
