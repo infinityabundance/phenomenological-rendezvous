@@ -3,6 +3,8 @@
 use crate::pattern::{NormalizedPattern, SubmodalityPattern};
 
 /// Compute Euclidean distance in normalized 9D submodality space.
+///
+/// Inputs must already be normalized to `[0, 1]` ranges.
 pub fn euclidean_distance(a: &NormalizedPattern, b: &NormalizedPattern) -> f32 {
     let mut sum = 0.0;
     sum += (a.brightness - b.brightness).powi(2);
@@ -39,7 +41,9 @@ impl MatchingConfig {
 /// Matcher that performs temporal smoothing over recent observations.
 #[derive(Debug, Clone)]
 pub struct Matcher {
+    /// Matching behavior configuration.
     config: MatchingConfig,
+    /// Sliding window of recent match results.
     window: Vec<bool>,
 }
 

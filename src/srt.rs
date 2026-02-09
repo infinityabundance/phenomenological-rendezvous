@@ -29,6 +29,8 @@ impl SemanticRendezvousToken {
     }
 
     /// Create an SRT from a byte slice.
+    ///
+    /// Returns an error if the slice is not exactly 32 bytes.
     pub fn from_slice(bytes: &[u8]) -> Result<Self, SrtParseError> {
         if bytes.len() != 32 {
             return Err(SrtParseError::InvalidLength(bytes.len()));
@@ -44,6 +46,8 @@ impl SemanticRendezvousToken {
     }
 
     /// Parse an SRT from a hex string.
+    ///
+    /// The string must contain exactly 64 hex characters.
     pub fn from_hex(hex: &str) -> Result<Self, SrtParseError> {
         hex.parse()
     }
@@ -65,6 +69,9 @@ impl SemanticRendezvousToken {
 /// - `digest[16..18]` -> arousal
 ///
 /// Remaining bytes are reserved for future extensions.
+///
+/// `salt` is an oracle-state or context binding, and should be provided in the
+/// same format for all peers that need to rendezvous.
 pub fn pattern_from_srt(
     srt: &SemanticRendezvousToken,
     salt: &[u8],
