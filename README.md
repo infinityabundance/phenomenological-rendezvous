@@ -2,6 +2,8 @@
 
 [![Crates.io](https://img.shields.io/crates/v/phenomenological-rendezvous.svg)](https://crates.io/crates/phenomenological-rendezvous)
 [![Docs.rs](https://img.shields.io/docsrs/phenomenological-rendezvous)](https://docs.rs/phenomenological-rendezvous)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18558066-blue)](https://doi.org/10.5281/zenodo.18558066)
+
 
 
 <p align="center">
