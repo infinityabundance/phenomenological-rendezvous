@@ -1,5 +1,7 @@
 # Phenomenological Rendezvous
 
+[![crates.io](https://img.shields.io/crates/v/phenomenological-rendezvous)](https://crates.io/crates/phenomenological-rendezvous)
+
 Phenomenological Rendezvous is a serverless peer coordination protocol that relies on matched internal representational patterns rather than centralized infrastructure. This repository provides a Rust reference implementation of the protocol-level building blocks.
 
 The crate focuses on SRTs, pattern space definitions, matching logic, and simulation tooling. It does not include biosensor drivers, device firmware, or mobile applications. The paper is available at DOI: 10.5281/zenodo.18558066 (link: `https://doi.org/10.5281/zenodo.18558066`). GitHub: `https://github.com/infinityabundance/phenomenological-rendezvous`.
@@ -8,6 +10,27 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 ```toml
 [dependencies]
 phenomenological-rendezvous = "0.1"
+```
+
+## Usage
+```rust
+use phenomenological_rendezvous::{
+    SemanticRendezvousToken,
+    SubmodalityPattern,
+};
+use phenomenological_rendezvous::srt::pattern_from_srt;
+use phenomenological_rendezvous::matching::{MatchingConfig, Matcher};
+
+fn main() {
+    let srt_hex = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
+    let srt = SemanticRendezvousToken::from_hex(srt_hex).unwrap();
+    let target = pattern_from_srt(&srt, b"example-salt");
+
+    let measured = SubmodalityPattern::zeros();
+    let mut matcher = Matcher::new(MatchingConfig::new(0.5, 3));
+    let matched = matcher.observe(&measured, &target);
+    println!("Matched? {}", matched);
+}
 ```
 
 ## Features
@@ -31,40 +54,11 @@ An SRT plus oracle-state (salt) deterministically maps to a SubmodalityPattern u
 ## Status
 Status: Experimental reference implementation of the Phenomenological Rendezvous protocol. APIs may change.
 
-## Getting Started
-```bash
-cargo add phenomenological-rendezvous
-```
-
-```rust
-use phenomenological_rendezvous::SemanticRendezvousToken;
-
-let srt = SemanticRendezvousToken::from_bytes([0u8; 32]);
-```
-
-## Example
-```rust
-use phenomenological_rendezvous::matching::{MatchingConfig, Matcher};
-use phenomenological_rendezvous::srt::pattern_from_srt;
-use phenomenological_rendezvous::{SemanticRendezvousToken, SubmodalityPattern};
-
-let srt = SemanticRendezvousToken::from_hex(
-    "0000000000000000000000000000000000000000000000000000000000000000",
-)
-.expect("valid hex");
-let target = pattern_from_srt(&srt, b"oracle-state");
-
-let measured = SubmodalityPattern::zeros();
-let mut matcher = Matcher::new(MatchingConfig::new(0.1, 3));
-let is_match = matcher.observe(&measured, &target);
-println!("match? {is_match}");
-```
-
 ## Command-line Usage
 Derive a target pattern from an SRT and salt:
 
 ```bash
-cargo run --bin phenorv-cli -- encode-target \\
+cargo run --bin phenorv -- encode-target \\
   --srt-hex 0000000000000000000000000000000000000000000000000000000000000000 \\
   --salt-string \"oracle-state\" \\
   --output target.json
@@ -73,7 +67,7 @@ cargo run --bin phenorv-cli -- encode-target \\
 Match a JSONL stream of measured patterns:
 
 ```bash
-cargo run --bin phenorv-cli -- match-stream \\
+cargo run --bin phenorv -- match-stream \\
   --srt-hex 0000000000000000000000000000000000000000000000000000000000000000 \\
   --salt-string \"oracle-state\" \\
   --epsilon 0.1 \\
