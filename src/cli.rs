@@ -9,6 +9,7 @@ use serde_json::json;
 
 use crate::matching::{MatchingConfig, Matcher};
 use crate::pattern::SubmodalityPattern;
+use crate::sim::{run_simulation, SimulationConfig};
 use crate::srt::{pattern_from_srt, SemanticRendezvousToken};
 
 /// Command-line interface for Phenomenological Rendezvous experiments.
@@ -56,6 +57,39 @@ pub enum Commands {
         /// Input JSONL file with SubmodalityPattern entries. Use "-" for stdin.
         #[arg(long)]
         input: PathBuf,
+    },
+    /// Run a Monte Carlo simulation for collision and false rendezvous rates.
+    Simulate {
+        /// SRT hex string (64 hex chars).
+        #[arg(long)]
+        srt_hex: String,
+        /// Salt as hex string.
+        #[arg(long, conflicts_with = "salt_string")]
+        salt_hex: Option<String>,
+        /// Salt as UTF-8 string.
+        #[arg(long)]
+        salt_string: Option<String>,
+        /// Optional JSON config file to load simulation parameters.
+        #[arg(long)]
+        config: Option<PathBuf>,
+        /// Number of peers per trial.
+        #[arg(long, default_value_t = 1000)]
+        num_peers: usize,
+        /// Number of trials to run.
+        #[arg(long, default_value_t = 1000)]
+        num_trials: usize,
+        /// Matching threshold in normalized space.
+        #[arg(long, default_value_t = 0.1)]
+        epsilon: f32,
+        /// Number of consecutive samples required to match.
+        #[arg(long, default_value_t = 3)]
+        window_size: usize,
+        /// Apply a geographic filter factor to reduce peer pool.
+        #[arg(long)]
+        apply_geo_filter: bool,
+        /// Geographic filter factor (e.g., 1e6).
+        #[arg(long, default_value_t = 1e6)]
+        geo_filter_factor: f32,
     },
 }
 
@@ -119,6 +153,39 @@ pub fn run() -> Result<(), CliError> {
                 });
                 println!("{}", output);
             }
+        }
+        Commands::Simulate {
+            srt_hex,
+            salt_hex,
+            salt_string,
+            config,
+            num_peers,
+            num_trials,
+            epsilon,
+            window_size,
+            apply_geo_filter,
+            geo_filter_factor,
+        } => {
+            let srt = SemanticRendezvousToken::from_hex(&srt_hex)?;
+            let salt = resolve_salt(salt_hex, salt_string)?;
+
+            let config = if let Some(path) = config {
+                let text = std::fs::read_to_string(path)?;
+                serde_json::from_str(&text)?
+            } else {
+                SimulationConfig {
+                    num_peers,
+                    num_trials,
+                    epsilon,
+                    window_size,
+                    apply_geo_filter,
+                    geo_filter_factor,
+                }
+            };
+
+            let result = run_simulation(&config, &srt, &salt);
+            let output = serde_json::to_string_pretty(&result)?;
+            println!("{output}");
         }
     }
 
