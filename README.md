@@ -1,6 +1,7 @@
 # Phenomenological Rendezvous
 
-[![crates.io](https://img.shields.io/crates/v/phenomenological-rendezvous)](https://crates.io/crates/phenomenological-rendezvous)
+[![Crates.io](https://img.shields.io/crates/v/phenomenological-rendezvous.svg)](https://crates.io/crates/phenomenological-rendezvous)
+[![Docs.rs](https://img.shields.io/docsrs/phenomenological-rendezvous)](https://docs.rs/phenomenological-rendezvous)
 
 
 <p align="center">
