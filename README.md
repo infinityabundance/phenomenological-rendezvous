@@ -18,6 +18,10 @@ The crate focuses on SRTs, pattern space definitions, matching logic, and simula
 
 de Beer, R. (2026). Phenomenological Rendezvous: Serverless Peer Coordination Through Matched Internal Representational Patterns (v1.0). Zenodo. [https://doi.org/10.5281/zenodo.18558066](https://doi.org/10.5281/zenodo.18558066) 
 
+de Beer, R. (2026). Predictive Rendezvous: Time--Intent--Deterministic Peer Coordination Without Infrastructure (v1.0). Zenodo. https://doi.org/10.5281/zenodo.18528430
+
+de Beer, R. (2026). Coordination by Foreknowledge: Semantic Rendezvous Tokens, Time--Based Addressing, and Deterministic Peer Systems (v1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.18542183
+
 [https://github.com/infinityabundance/phenomenological-rendezvous](https://github.github/infinityabundance/phenomenological-rendezvous)
 
 ## Installation
